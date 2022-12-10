@@ -6,7 +6,7 @@ The *ScannerMeasurement* class works with different API modules:
 + [**Pytta**](https://github.com/PyTTAmaster/PyTTa) is used to generate and record the audio signals when it is used an audio board like the Presonus USB audiobox or M-audio interfaces. Otherwise, you can use the National Instruments cDAQ with the signal generator and adquisition modules. In this case, the *ScannerMeasurement* class will use the [**nidaqmx**](https://github.com/ni/nidaqmx-python) API module.
 
 
-# What is necessary to run the class propertly?
+# What is necessary to run the class properly?
 
 ## 1 - Regarding _Telemetrix_
 Before using Telemetrix, it's necessary to download and install [Arduino's IDE] software. After plug an Arduino board to the PC and open it's software,
