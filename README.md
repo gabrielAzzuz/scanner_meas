@@ -53,5 +53,5 @@ In summary, the input of the class are all captured signal on all points of an a
 5 - The spectrum of the final signal represents the spectrum of the respective point, and it will be used in the decomposition process.
 
 
-This steps are applied to all points. 
+This steps are applied to all measured points. 
 
