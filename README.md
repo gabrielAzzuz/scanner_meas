@@ -43,10 +43,15 @@ This is another class which can be used to easily process all the data adquired 
 In summary, the input of the class are all captured signal on all points of an array. To decompose the sound field, each recorded point passes through different steps of process:
 
 1 - The impulsive response of $n$ repetitions are calculated;
+
 2 - The pressure's temporal average is calculated for the respective point;
+
 3 - A temporal window is applied to the averaged impulsive response, which isolates the directed and the first reflection captured;
+
 4 - The IR windowed is then cropped since there's a long tail of zeros after apply the window;
+
 5 - The spectrum of the final signal represents the spectrum of the respective point, and it will be used in the decomposition process.
+
 
 This steps are applied to all points. 
 
