@@ -458,7 +458,7 @@ class ScannerPostProcess():
         if return_freq_and_pf == True:
             return f_Decomp, pfDecomp
         
-    def field_decomposition(self, n_waves = 2542, Method = 'Ridge', plot_spheres = False, plot_maps = True,
+    def field_decomposition(self, n_waves = 2542, Method = 'Ridge', plot_spheres = False, plot_maps = False,
                             f_plot = np.array([100, 250, 500, 1000, 1500, 2000, 2500, 300, 3500, 4000]), 
                             dB_range = 30, save_plots = False, save_field = False, path = ''):
         """
@@ -595,8 +595,8 @@ class ScannerPostProcess():
             plt.tight_layout()
             
         
-    def var_reconstruction_target(self, Lxy_Var = True, zr_Var = True,
-                                  Lxy_var = 0.01, zr_var = -0.01, nxy_var = 4, nzr_var = 4):
+    def var_reconstruction_target(self, Lxy_Var = False, zr_Var = True,
+                                  Lxy_var = 0.01, zr_var = 0.005, nxy_var = 2, nzr_var = 4):
         
         self.field_var = self.field
         if Lxy_Var != False:
@@ -619,7 +619,7 @@ class ScannerPostProcess():
             axs[0].grid(color='gray', linestyle='-.', linewidth=1.5)
             axs[1].grid(color='gray', linestyle='-.', linewidth=0.4)
             
-            fig, axs = plt.subplots(nrows=1, ncols=1)
+            fig, axs = plt.subplots(nrows=1, ncols=1, dpi=200)
             fig.suptitle('Reconstr. area analysis - Absorption', fontsize = 'large')
             for n in range(nxy_var):
                 axs.semilogx(self.freq_decomp, np.array(Alpha_var[n]), label=f'Lxy = {Lxy_var*(n+1)}')
@@ -636,13 +636,19 @@ class ScannerPostProcess():
             for n in range(nzr_var):
                 self.field_var.zs(Lx = 0.1, Ly = 0.1, n_x = 21, n_y = 21, zr=(n+1)*zr_var+zr_var)
                 Zs_var.append(self.field_var.Zs); Alpha_var.append(self.field_var.alpha[0,:])
+                self.field_var.zs(Lx = 0.1, Ly = 0.1, n_x = 21, n_y = 21, zr=((n+1)*zr_var+zr_var)*-1)
+                Zs_var.append(self.field_var.Zs); Alpha_var.append(self.field_var.alpha[0,:])
             fig, axs = plt.subplots(nrows=2, ncols=1, dpi=200)
             fig.suptitle('Reconstr. area analysis - Impedance', fontsize = 'medium')
-            for n in range(nxy_var):
-                axs[0].semilogx(self.freq_decomp, np.real(Zs_var[n]),
-                                linewidth=2.0, label=f'Lxy = {zr_var*(n+1)}')
-                axs[1].semilogx(self.freq_decomp, np.imag(Zs_var[n]),
-                                linewidth = 2.0, label=f'Lxy = {zr_var*(n+1)}')
+            for n in np.array(np.linspace(0,int(2*nxy_var),int(nxy_var),endpoint=False)):
+                axs[0].semilogx(self.freq_decomp, np.real(Zs_var[int(n)]),
+                                linewidth=2.0, label=f'$z_r$ = {(n+1)*zr_var+zr_var}')
+                axs[0].semilogx(self.freq_decomp, np.real(Zs_var[int(n+1)]),
+                                linewidth=2.0, label=f'$z_r$ = {((n+1)*zr_var+zr_var)*-1}')  
+                axs[1].semilogx(self.freq_decomp, np.imag(Zs_var[int(n)]),
+                                linewidth = 2.0, label=f'$z_r$ = {(n+1)*zr_var+zr_var}')
+                axs[1].semilogx(self.freq_decomp, np.imag(Zs_var[int(n+1)]),
+                                linewidth=2.0, label=f'$z_r$ = {((n+1)*zr_var+zr_var)*-1}')
             axs[0].set_xlim((0.8*self.freq_decomp[0], 1.05*self.freq_decomp[-1]))
             axs[1].set_xlim((0.8*self.freq_decomp[0], 1.05*self.freq_decomp[-1]))
             axs[0].set_xlabel('Frequency [Hz]', fontsize = 'medium'); axs[1].set_xlabel('Frequency [Hz]', fontsize = 'medium')
@@ -654,8 +660,9 @@ class ScannerPostProcess():
             
             fig, axs = plt.subplots(nrows=1, ncols=1)
             fig.suptitle('Reconstr. area analysis - Absorption', fontsize = 'large')
-            for n in range(nxy_var):
-                axs.semilogx(self.freq_decomp, np.array(Alpha_var[n]), label=f'Lxy = {zr_var*(n+1)}')
+            for n in np.array(np.linspace(0,int(2*nxy_var),int(nxy_var),endpoint=False)):
+                axs.semilogx(self.freq_decomp, np.array(Alpha_var[int(n)]), linewidth=2.0, label=f'$z_r$ = {(n+1)*zr_var+zr_var}')
+                axs.semilogx(self.freq_decomp, np.array(Alpha_var[int(n+1)]), linewidth=2.0, label=f'$z_r$ = {((n+1)*zr_var+zr_var)*-1}')
             axs.set_xlim((0.8*self.freq_decomp[0], 1.05*self.freq_decomp[-1]))
             axs.set_ylim((-0.02, 1.02))
             axs.set_xlabel('Frequency [Hz]', fontsize = 'medium'); 
