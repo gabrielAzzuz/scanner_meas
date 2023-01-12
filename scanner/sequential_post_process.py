@@ -61,6 +61,7 @@ class ScannerPostProcess():
         self.repetitions = repetitions
         self.t_bypass = t_bypass
         #
+        self.xt = []
         self.temp = temp
         self.IRs_windowed = []
         self.f_Decomp = []
@@ -224,6 +225,53 @@ class ScannerPostProcess():
             yt_list.append(y_rep_list)
             
         return yt_list
+    
+    def load_and_processIR_meas_files(self, kirkRegularization = True, discout_bypass_time=True, 
+                                      store_as_objs = True):
+        """
+        Load audio measurements along with it's IR process 
+        
+        Parameters
+        ----------
+        kirkRegularization : "True" or "False"
+            Apply or not Kirkeby's regularization. Default is 'True'.
+        discout_bypass_time:  "True" or "False"
+            After the time average, the signal is cropped to t == [t_bypass : 1/fs : end]. 
+            Default is 'True'
+        store_as_objs :  "True" or "False" 
+            When is set to 'True', all IR and storaged in the class as 'IRs'. When lots of point are processed 
+            inside a loop, it will consume a lot more memory. By setting this to 'False', only the time signal
+            of the IR will be storaged.
+        """
+        self.IR_pts = []
+        for jrec in range(self.receivers.coord.shape[0]):
+           # y_rep_list = []
+            IR_rep_list = []
+            for jmeas in range(self.repetitions):
+                filename = 'rec' + str(int(jrec)) +\
+                        '_m' + str(int(jmeas)) + '.hdf5'
+                complete_path = self.main_folder / self.name / 'measured_signals'
+                med_dict = pytta.load(str(complete_path / filename))
+                IR_tk = pytta.ImpulsiveResponse(excitation=self.xt, recording=med_dict['plot_frf'], samplingRate=self.fs, regularization = kirkRegularization) 
+                # new_dict = {'repetitions':str(int(jmeas))}
+                # med_dict.update(new_dict)
+                IR_rep_list.append(IR_tk.IR)
+            if self.repetitions == 2:
+                IR_pt_merge = pytta.merge(IR_rep_list[0], IR_rep_list[1])
+            elif self.repetitions == 3:
+                IR_pt_merge = pytta.merge(IR_rep_list[0], IR_rep_list[1], IR_rep_list[2])
+                # y_rep_list.append(med_dict['plot_frf'])
+            IRpt = IR_pt_merge.channelMean() 
+            IRpt.comment = self.receivers.coord[jrec]
+            if discout_bypass_time == True:
+                IRpt.crop(float(self.t_bypass), float(IRpt.timeVector[-1]))
+            
+            if store_as_objs == True:
+                self.IR_pts.append(IRpt)
+            else:
+                self.IR_pts.append(IRpt.timeSignal)
+            #yt_list.append(y_rep_list)
+        self.t_IR = IRpt.timeVector    
         
     def temp_average(self, Yt = [[]], rep = 2, kirkRegularization = True,
                      discout_bypass_time=True):
@@ -237,7 +285,7 @@ class ScannerPostProcess():
             taken on one point
         kirkRegularization : "True" or "False"
             Apply or not Kirkeby's regularization. Default is 'True'.
-       discout_bypass_time:  "True" or "False"
+        discout_bypass_time:  "True" or "False"
             After the time average, the signal is cropped to t == [t_bypass : 1/fs : end]. 
             Default is 'True'
         -------
@@ -262,7 +310,6 @@ class ScannerPostProcess():
                 if discout_bypass_time == True:
                     ht.crop(float(self.t_bypass), float(ht.timeVector[-1]))
                 IRs_array.append(ht)
-                Yt[r] = []
             else:
                 ht_obj = pytta.ImpulsiveResponse(excitation=self.xt, recording=Yt[r][0], samplingRate=self.fs, regularization = kirkRegularization)
                 ht_pt = ht_obj.IR
@@ -270,7 +317,6 @@ class ScannerPostProcess():
                 if discout_bypass_time == True:
                     ht_pt.crop(float(self.t_bypass), float(ht_pt.timeVector[-1]))
                 IRs_array.append(ht_pt)
-                Yt[r] = []
                 
         return IRs_array
         
