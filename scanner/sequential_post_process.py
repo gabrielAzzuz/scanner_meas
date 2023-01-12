@@ -262,6 +262,7 @@ class ScannerPostProcess():
                 if discout_bypass_time == True:
                     ht.crop(float(self.t_bypass), float(ht.timeVector[-1]))
                 IRs_array.append(ht)
+                Yt[r] = []
             else:
                 ht_obj = pytta.ImpulsiveResponse(excitation=self.xt, recording=Yt[r][0], samplingRate=self.fs, regularization = kirkRegularization)
                 ht_pt = ht_obj.IR
@@ -269,6 +270,7 @@ class ScannerPostProcess():
                 if discout_bypass_time == True:
                     ht_pt.crop(float(self.t_bypass), float(ht_pt.timeVector[-1]))
                 IRs_array.append(ht_pt)
+                Yt[r] = []
                 
         return IRs_array
         
@@ -276,8 +278,7 @@ class ScannerPostProcess():
                     Exp_params=True, baltParams=False, 
                     tw1=0.8, tw2=2.5, T3 = 0.0094, t_start=0.00002,    #Window params
                     blackmanharris_or_hann = 'blackman harris', 
-                    plot=False, savefig=False, path= '', name = '',
-                    IR_check = np.array([10, 50, 100, 200])):
+                    plot=False, savefig=False, path= '', name = ''):
            """
            Adrienne's window creation and application. The window is made by two halfs of the Blackman Harris window, an ascending
            plus a descending part. The ascending part represents the beggining of the Adrienne's window, which follows a retangular
@@ -405,6 +406,14 @@ class ScannerPostProcess():
            self.IRs_windowed.append(IR_windowed)
            return IR_windowed, window  
         
+    
+    
+
+    
+    
+    
+    
+    
     def time_and_freq_crop_to_decomp(self, t_crop = 0.2, freq_range = np.array([100, 4000]),
                                      return_freq_and_pf = False):
         """
@@ -458,6 +467,12 @@ class ScannerPostProcess():
         if return_freq_and_pf == True:
             return f_Decomp, pfDecomp
         
+    def array_rearrange(self, Lxy_material = np.array([0.41, 0.41])):
+        
+        
+        max_Lx_array = round(max(self.receivers.coord[:,0]),5); min_Lx_array = round(min(self.receivers.coord[:,0]),5)
+        max_Ly_array = round(max(self.receivers.coord[:,1]),5); min_Ly_array = round(min(self.receivers.coord[:,1]),5)
+   
     def field_decomposition(self, n_waves = 2542, Method = 'Ridge', plot_spheres = False, plot_maps = False,
                             f_plot = np.array([100, 250, 500, 1000, 1500, 2000, 2500, 300, 3500, 4000]), 
                             dB_range = 30, save_plots = False, save_field = False, path = ''):
@@ -596,7 +611,7 @@ class ScannerPostProcess():
             
         
     def var_reconstruction_target(self, Lxy_Var = False, zr_Var = True,
-                                  Lxy_var = 0.01, zr_var = 0.005, nxy_var = 2, nzr_var = 4):
+                                  Lxy_var = 0.01, zr_var = 0.005, nxy_var = 2, nzr_var = 6):
         
         self.field_var = self.field
         if Lxy_Var != False:
