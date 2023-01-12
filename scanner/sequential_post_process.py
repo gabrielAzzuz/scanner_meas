@@ -328,11 +328,11 @@ class ScannerPostProcess():
 
            """
            
-           if type(Imp_Resp) != 'numpy.ndarray':
+           if type(Imp_Resp) != np.ndarray:
                Pt = Imp_Resp.timeSignal
                t_Pt = Imp_Resp.timeVector
            elif type(Imp_Resp) == list:
-               if type(Imp_Resp[0]) != 'numpy.ndarray':
+               if type(Imp_Resp[0]) != np.ndarray:
                    Pt = Imp_Resp.timeSignal
                    t_Pt = Imp_Resp.timeVector
                else:
