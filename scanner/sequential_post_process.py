@@ -596,7 +596,7 @@ class ScannerPostProcess():
             self.field.save(filename='Field_decomposition', path = path + self.material + '/class_results/')
             
             
-    def reconstruct_pu(self, z_coord = 0.0, Lxy = np.array([0.1, 0.1]), 
+    def reconstruct_pu(self, Lxy = np.array([0.1, 0.1]), 
                                    nxy = np.array([21, 21], dtype='int32'), theta_rad = 0,
                                    alpha_from_wavenumber = True, plot_alphas = False):
         """
@@ -606,9 +606,6 @@ class ScannerPostProcess():
 
         Parameters
         ----------
-        z_coord : FLOAT, in meters
-            The height of the points where pressure and particle velocity will be
-            estimated. The default is 0.0.
         Lxy : [FLOAT, FLOAT], in meters
             XY-range of the plane of points where 'p' ans 'u' will be estimated.
             The default is np.array([0.1, 0.1]).
@@ -629,7 +626,7 @@ class ScannerPostProcess():
 
         """
         alphas = []; freq_plot = []
-        self.field.zs(Lx=0.1, Ly=0.1, n_x=21, n_y=21, zr=0.0, theta=[np.deg2rad(0)])  
+        self.field.zs(Lx=0.1, Ly=0.1, n_x=21, n_y=21, theta=[np.deg2rad(0)])  
         alpha = self.field.alpha[0,:] 
         alphas.append(alpha); freq_plot.append(self.freq_decomp)
         if alpha_from_wavenumber != False:
