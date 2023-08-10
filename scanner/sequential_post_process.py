@@ -658,13 +658,13 @@ class ScannerPostProcess():
         
         
         if Lxy_Var != False:
-            self.field_varLxy = self.field
+            field_varLxy = self.field
             Zs_var = []; Alpha_var = []
             for n in range(nxy_var):
-                self.field_varLxy.zs(Lx = ((n+1)*Lxy_var+Lxy_var), Ly = ((n+1)*Lxy_var+Lxy_var),
+                field_varLxy.zs(Lx = ((n+1)*Lxy_var+Lxy_var), Ly = ((n+1)*Lxy_var+Lxy_var),
                                   n_x = round((210*Lxy_var)*(n+1)), n_y = round((210*Lxy_var)*(n+1)),
                                   zr=0.0)
-                Zs_var.append(self.field_varLxy.Zs); Alpha_var.append(self.field_varLxy.alpha[0,:])
+                Zs_var.append(field_varLxy.Zs); Alpha_var.append(field_varLxy.alpha[0,:])
             fig, axs = plt.subplots(nrows=2, ncols=1, dpi=200)
             fig.suptitle('Reconstruction area variation - Impedance', fontsize = 'medium')
             for n in range(nxy_var):
@@ -691,13 +691,13 @@ class ScannerPostProcess():
             plt.show()
             
         if zr_Var != False:
-            self.field_varZr = self.field
+            field_varZr = self.field
             Zs_var = []; Alpha_var = []
             for n in range(nzr_var):
-                self.field_varZr.zs(Lx = 0.1, Ly = 0.1, n_x = 21, n_y = 21, zr=(n+1)*zr_var+zr_var)
-                Zs_var.append(self.field_var.Zs); Alpha_var.append(self.field_varZr.alpha[0,:])
-                self.field_varZr.zs(Lx = 0.1, Ly = 0.1, n_x = 21, n_y = 21, zr=((n+1)*zr_var+zr_var)*-1)
-                Zs_var.append(self.field_var.Zs); Alpha_var.append(self.field_varZr.alpha[0,:])
+                field_varZr.zs(Lx = 0.1, Ly = 0.1, n_x = 21, n_y = 21, zr=(n+1)*zr_var+zr_var)
+                Zs_var.append(self.field_var.Zs); Alpha_var.append(field_varZr.alpha[0,:])
+                field_varZr.zs(Lx = 0.1, Ly = 0.1, n_x = 21, n_y = 21, zr=((n+1)*zr_var+zr_var)*-1)
+                Zs_var.append(self.field_var.Zs); Alpha_var.append(field_varZr.alpha[0,:])
             fig, axs = plt.subplots(nrows=2, ncols=1, dpi=200)
             fig.suptitle('Reconstr. area analysis - Impedance', fontsize = 'medium')
             for n in np.array(np.linspace(0,int(2*nxy_var),int(nxy_var),endpoint=False)):
