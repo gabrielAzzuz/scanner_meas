@@ -584,11 +584,11 @@ class ScannerPostProcess():
             pkm = path + self.material + '/class_results/'; pks = pkm
             for f in range(len(f_plot)):
                 if save_plots == True:
-                    self.field.plot_pk_smallmap(freq=f_plot[f], db=True, dinrange=db_range, 
-                                            title = False, colorbar=False, save=True, fname='Pk_Smap_'+fName, path=pkm)
+                    self.field.plot_pk_map(freq=f_plot[f], db=True, dinrange=db_range, 
+                                            fname='Pk_Smap_'+fName, path=pkm)
                 else:
-                    self.field.plot_pk_smallmap(freq=f_plot[f], db=True, dinrange=db_range, 
-                                            title = False, colorbar=False, save=False, fname='Pk_Smap_'+fName, path=pkm)
+                    self.field.plot_pk_map(freq=f_plot[f], db=True, dinrange=db_range, 
+                                            fname='Pk_Smap_'+fName, path=pkm)
         else:
             pass
         
