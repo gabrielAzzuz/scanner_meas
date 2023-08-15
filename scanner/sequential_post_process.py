@@ -695,9 +695,9 @@ class ScannerPostProcess():
             Zs_var = []; Alpha_var = []
             for n in range(nzr_var):
                 field_varZr.zs(Lx = 0.1, Ly = 0.1, n_x = 21, n_y = 21, zr=(n+1)*zr_var+zr_var)
-                Zs_var.append(self.field_var.Zs); Alpha_var.append(field_varZr.alpha[0,:])
+                Zs_var.append(field_varZr.Zs); Alpha_var.append(field_varZr.alpha[0,:])
                 field_varZr.zs(Lx = 0.1, Ly = 0.1, n_x = 21, n_y = 21, zr=((n+1)*zr_var+zr_var)*-1)
-                Zs_var.append(self.field_var.Zs); Alpha_var.append(field_varZr.alpha[0,:])
+                Zs_var.append(field_varZr.Zs); Alpha_var.append(field_varZr.alpha[0,:])
             fig, axs = plt.subplots(nrows=2, ncols=1, dpi=200)
             fig.suptitle('Reconstr. area analysis - Impedance', fontsize = 'medium')
             for n in np.array(np.linspace(0,int(2*nxy_var),int(nxy_var),endpoint=False)):
